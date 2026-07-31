@@ -12,7 +12,7 @@
 
   <style>
     /* ==========================================
-       1. STRICT OVERFLOW & ZERO SCROLLBAR CONTROL
+       1. OVERFLOW & SCROLLBAR CONTROL
        ========================================== */
     *, *::before, *::after {
       box-sizing: border-box;
@@ -40,9 +40,6 @@
       height: 0 !important;
     }
 
-    /* ==========================================
-       2. BACKGROUND & CANVAS
-       ========================================== */
     body {
       font-family: 'Montserrat', sans-serif;
       background: #0d0107;
@@ -53,18 +50,92 @@
       justify-content: center;
     }
 
+    /* ==========================================
+       2. FILMSTRIP SLIDESHOW (BACKGROUND LAYER)
+       ========================================== */
+    .filmstrip-container {
+      position: absolute;
+      left: 0;
+      width: 100vw;
+      overflow: hidden;
+      z-index: 0; /* Layered behind the canvas petals */
+      opacity: 0.45; /* Soft ambient background opacity */
+      pointer-events: none;
+    }
+
+    .filmstrip-container.top {
+      top: 15px;
+    }
+
+    .filmstrip-container.bottom {
+      bottom: 40px;
+    }
+
+    .filmstrip-track {
+      display: flex;
+      gap: 12px;
+      width: max-content;
+      animation: filmScroll 35s linear infinite;
+    }
+
+    .filmstrip-container.bottom .filmstrip-track {
+      animation-direction: reverse; /* Opposite scroll direction */
+    }
+
+    @keyframes filmScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); } /* Loops infinitely */
+    }
+
+    /* Vintage Film Reel Frame */
+    .film-frame {
+      position: relative;
+      width: 110px;
+      height: 80px;
+      background: #111;
+      border-left: 3px solid #1a1a1a;
+      border-right: 3px solid #1a1a1a;
+      border-top: 10px solid #1a1a1a;
+      border-bottom: 10px solid #1a1a1a;
+      border-radius: 4px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.7);
+      flex-shrink: 0;
+    }
+
+    /* Sprocket holes (Film perforations) */
+    .film-frame::before, .film-frame::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      height: 4px;
+      background: repeating-linear-gradient(90deg, #fff 0, #fff 5px, transparent 5px, transparent 11px);
+      opacity: 0.35;
+    }
+    .film-frame::before { top: -7px; }
+    .film-frame::after { bottom: -7px; }
+
+    .film-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: contrast(1.05) sepia(0.15);
+    }
+
+    /* ==========================================
+       3. PETALS CANVAS (LAYER 2)
+       ========================================== */
     #canvas {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 1;
+      z-index: 2; /* Layered ON TOP of filmstrip, behind card */
       pointer-events: none;
     }
 
     /* ==========================================
-       3. BULLETPROOF SPLASH SCREEN
+       4. BULLETPROOF SPLASH SCREEN
        ========================================== */
     #splash {
       position: fixed;
@@ -73,8 +144,8 @@
       width: 100vw;
       height: 100vh;
       height: 100dvh;
-      z-index: 9999; /* Higher priority overlay */
-      background: #120008; /* Solid background fallback */
+      z-index: 9999;
+      background: #120008;
       background: radial-gradient(circle at center, rgba(50, 3, 24, 0.98) 0%, rgba(5, 0, 2, 1) 100%);
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
@@ -146,12 +217,12 @@
     }
 
     /* ==========================================
-       4. MAIN EXTRAVAGANT CARD
+       5. MAIN CARD (TOP LAYER)
        ========================================== */
     .card {
       position: relative;
       z-index: 10;
-      background: rgba(35, 5, 20, 0.65);
+      background: rgba(35, 5, 20, 0.75);
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
       border-radius: 32px;
@@ -164,7 +235,7 @@
         0 30px 60px rgba(0, 0, 0, 0.9),
         inset 0 0 25px rgba(255, 182, 193, 0.1),
         0 0 40px rgba(255, 75, 114, 0.25);
-      display: none; /* Kept completely hidden until splash unlock */
+      display: none;
       opacity: 0;
       transform: translateY(20px);
       transition: opacity 1s ease, transform 1s ease;
@@ -176,11 +247,10 @@
       transform: translateY(0);
     }
 
-    /* Avatar Ring */
     .avatar-box {
       position: relative;
-      width: 125px;
-      height: 125px;
+      width: 140px;
+      height: 140px;
       margin: 0 auto 1.5rem;
     }
 
@@ -229,7 +299,6 @@
       text-transform: uppercase;
     }
 
-    /* Reason Box */
     .reason-box {
       background: rgba(0, 0, 0, 0.35);
       border: 1px solid rgba(255, 215, 0, 0.2);
@@ -254,7 +323,6 @@
       transform: scale(0.95);
     }
 
-    /* Main Action Button */
     .btn {
       background: linear-gradient(135deg, #ff2a5f 0%, #b80e38 50%, #7a001e 100%);
       color: #fff;
@@ -281,7 +349,7 @@
 
     .footer {
       position: absolute;
-      bottom: 1.2rem;
+      bottom: 1rem;
       font-family: 'Cinzel', serif;
       font-size: 0.7rem;
       letter-spacing: 2px;
@@ -297,7 +365,43 @@
 </head>
 <body>
 
-  <!-- Particle Background Canvas -->
+  <!-- BACKGROUND TOP FILMSTRIP -->
+  <div class="filmstrip-container top">
+    <div class="filmstrip-track">
+      <!-- Repeated set for continuous infinite loop -->
+      <div class="film-frame"><img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=300"></div>
+      <div class="film-frame"><img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=300"></div>
+      <div class="film-frame"><img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=300"></div>
+      <div class="film-frame"><img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=300"></div>
+      <div class="film-frame"><img src="https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=300"></div>
+      <!-- Duplicate Set -->
+      <div class="film-frame"><img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=300"></div>
+      <div class="film-frame"><img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=300"></div>
+      <div class="film-frame"><img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=300"></div>
+      <div class="film-frame"><img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=300"></div>
+      <div class="film-frame"><img src="https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=300"></div>
+    </div>
+  </div>
+
+  <!-- BACKGROUND BOTTOM FILMSTRIP -->
+  <div class="filmstrip-container bottom">
+    <div class="filmstrip-track">
+      <!-- Repeated set for continuous infinite loop -->
+      <div class="film-frame"><img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=300"></div>
+      <div class="film-frame"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300"></div>
+      <div class="film-frame"><img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=300"></div>
+      <div class="film-frame"><img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=300"></div>
+      <div class="film-frame"><img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=300"></div>
+      <!-- Duplicate Set -->
+      <div class="film-frame"><img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=300"></div>
+      <div class="film-frame"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300"></div>
+      <div class="film-frame"><img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=300"></div>
+      <div class="film-frame"><img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=300"></div>
+      <div class="film-frame"><img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=300"></div>
+    </div>
+  </div>
+
+  <!-- FALLING PETALS CANVAS LAYER -->
   <canvas id="canvas"></canvas>
 
   <!-- SPLASH SCREEN -->
@@ -317,10 +421,11 @@
       <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400" alt="Her Photo" class="profile-img">
     </div>
 
-    <h1>Happy GF day babyyy 💕</h1>
+    <h1>Hey [Her Name] 💕</h1>
+    <p class="subtitle">A Symphony of Reasons</p>
 
     <div class="reason-box" id="reasonText">
-      Click the button below for my wonderful messages charot ... ✨
+      Click the button below to reveal another reason why you have my whole heart... ✨
     </div>
 
     <button class="btn" onclick="nextReason(event)">
@@ -347,7 +452,6 @@
     let lastIndex = -1;
     let audioCtx = null;
 
-    // Safe lazy-loaded Audio Context
     function playChimeNote(freq, delay, duration) {
       setTimeout(() => {
         try {
@@ -373,9 +477,7 @@
           
           osc.start();
           osc.stop(audioCtx.currentTime + duration);
-        } catch (err) {
-          // Fallback gracefully if audio is blocked
-        }
+        } catch (err) {}
       }, delay);
     }
 
@@ -384,18 +486,12 @@
       notes.forEach((freq, i) => playChimeNote(freq, i * 120, 1.8));
     }
 
-    // Splash Screen Unlock
     function unlockSite() {
       playDreamyArpeggio();
-      
-      const splash = document.getElementById('splash');
-      const card = document.getElementById('mainCard');
-      
-      splash.classList.add('hide');
-      card.classList.add('show');
+      document.getElementById('splash').classList.add('hide');
+      document.getElementById('mainCard').classList.add('show');
     }
 
-    // Reason Transition
     function nextReason(e) {
       playChimeNote(880, 0, 1.2);
       if (e) createBurst(e.clientX, e.clientY);
@@ -415,7 +511,7 @@
       }, 350);
     }
 
-    // Canvas Background Animation
+    // Canvas Falling Petals
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     let width, height, particles = [];
