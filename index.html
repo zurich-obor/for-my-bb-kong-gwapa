@@ -18,18 +18,23 @@
       padding: 0;
     }
 
+    /* Completely hide scrollbars and prevent layout movement */
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, #ffd1dc 0%, #fff0f5 100%);
       color: var(--text);
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 2rem 1rem;
+      padding: 1rem;
       position: relative;
-      overflow-x: hidden;
     }
 
     .card {
@@ -67,19 +72,21 @@
       margin-bottom: 1.5rem;
     }
 
+    /* Fixed height prevents the box from shrinking/expanding when text changes */
     .reason-box {
       background: #ffffff;
       border-radius: 12px;
-      padding: 1.2rem;
-      min-height: 80px;
+      padding: 1rem 1.2rem;
+      height: 90px;
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04);
       margin-bottom: 1.5rem;
       font-style: italic;
-      font-size: 1.05rem;
+      font-size: 1rem;
       color: #333;
+      overflow: hidden;
     }
 
     button {
@@ -107,14 +114,15 @@
       z-index: 10;
     }
 
-    /* Floating hearts background */
+    /* Fixed positioning stops elements from triggering horizontal scroll overflow */
     .heart {
-      position: absolute;
-      bottom: -20px;
+      position: fixed;
+      bottom: -40px;
       font-size: 1.2rem;
       animation: float 6s linear infinite;
       opacity: 0.7;
       pointer-events: none;
+      z-index: 1;
     }
 
     @keyframes float {
@@ -123,7 +131,7 @@
         opacity: 1;
       }
       100% {
-        transform: translateY(-100vh) rotate(360deg);
+        transform: translateY(-110vh) rotate(360deg);
         opacity: 0;
       }
     }
@@ -132,7 +140,6 @@
 <body>
 
   <div class="card">
-    <!-- Replace image URL with a link to her photo -->
     <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400" alt="Her Photo" class="profile-img">
     
     <h1>Hey [Her Name] 💕</h1>
@@ -150,7 +157,6 @@
   </div>
 
   <script>
-    // Customize your reasons here!
     const reasons = [
       "Your smile can make even my worst day instantly better.",
       "The way you laugh at my silly jokes.",
@@ -167,13 +173,14 @@
       box.innerText = randomReason;
     }
 
-    // Creates rising floating heart animations
     function createHeart() {
       const heart = document.createElement('div');
       heart.classList.add('heart');
       heart.innerText = ['💖', '💕', '✨', '🌸', '❤️'][Math.floor(Math.random() * 5)];
-      heart.style.left = Math.random() * 100 + 'vw';
-      heart.style.animationDuration = Math.random() * 3 + 4 + 's';
+      
+      // Restrict horizontal placement to inside viewport boundaries
+      heart.style.left = (Math.random() * 92 + 4) + '%';
+      heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
       document.body.appendChild(heart);
 
       setTimeout(() => { heart.remove(); }, 6000);
