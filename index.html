@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>To My Favorite Person ❤️</title>
+  <style>
+    :root {
+      --bg-color: #fff0f5;
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --primary: #ff4b72;
+      --text: #4a3e43;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ffd1dc 0%, #fff0f5 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 2.5rem 1.5rem;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(255, 105, 180, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      z-index: 10;
+    }
+
+    .profile-img {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid var(--primary);
+      margin-bottom: 1.2rem;
+      box-shadow: 0 4px 15px rgba(255, 75, 114, 0.3);
+    }
+
+    h1 {
+      color: var(--primary);
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p.subtitle {
+      font-size: 0.95rem;
+      opacity: 0.85;
+      margin-bottom: 1.5rem;
+    }
+
+    .reason-box {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 1.2rem;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04);
+      margin-bottom: 1.5rem;
+      font-style: italic;
+      font-size: 1.05rem;
+      color: #333;
+    }
+
+    button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.6rem;
+      font-size: 1rem;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(255, 75, 114, 0.4);
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background: #e03a5f;
+    }
+
+    .footer {
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      color: #777;
+      z-index: 10;
+    }
+
+    /* Floating hearts background */
+    .heart {
+      position: absolute;
+      bottom: -20px;
+      font-size: 1.2rem;
+      animation: float 6s linear infinite;
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <!-- Replace image URL with a link to her photo -->
+    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400" alt="Her Photo" class="profile-img">
+    
+    <h1>Hey [Her Name] 💕</h1>
+    <p class="subtitle">Just a tiny corner of the internet built to remind you how special you are.</p>
+    
+    <div class="reason-box" id="reasonText">
+      Click the button below for a reason why you're amazing! ✨
+    </div>
+
+    <button onclick="nextReason()">Give Me Another Reason ❤️</button>
+  </div>
+
+  <div class="footer">
+    Made with ❤️ just for you
+  </div>
+
+  <script>
+    // Customize your reasons here!
+    const reasons = [
+      "Your smile can make even my worst day instantly better.",
+      "The way you laugh at my silly jokes.",
+      "How thoughtful and caring you are with everyone around you.",
+      "You always know how to comfort me when I'm stressed.",
+      "You're not just my girlfriend, you're my absolute best friend.",
+      "Your passion and drive inspire me every single day.",
+      "The way your eyes light up when you talk about things you love."
+    ];
+
+    function nextReason() {
+      const box = document.getElementById('reasonText');
+      const randomReason = reasons[Math.floor(Math.random() * reasons.length)];
+      box.innerText = randomReason;
+    }
+
+    // Creates rising floating heart animations
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.innerText = ['💖', '💕', '✨', '🌸', '❤️'][Math.floor(Math.random() * 5)];
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = Math.random() * 3 + 4 + 's';
+      document.body.appendChild(heart);
+
+      setTimeout(() => { heart.remove(); }, 6000);
+    }
+    setInterval(createHeart, 500);
+  </script>
+</body>
+</html>
