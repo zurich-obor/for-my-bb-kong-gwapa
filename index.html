@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>For My Endless Love ✨</title>
   
-  <!-- Romantic Google Fonts -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Great+Vibes&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
@@ -41,10 +41,11 @@
     }
 
     /* ==========================================
-       2. LUXURY DEEP VELVET BACKGROUND
+       2. BACKGROUND & CANVAS
        ========================================== */
     body {
       font-family: 'Montserrat', sans-serif;
+      background: #0d0107;
       background: radial-gradient(circle at center, #320318 0%, #120008 70%, #050002 100%);
       color: #fff;
       display: flex;
@@ -63,29 +64,33 @@
     }
 
     /* ==========================================
-       3. SPLASH SCREEN (ENTRY PAGE)
+       3. BULLETPROOF SPLASH SCREEN
        ========================================== */
     #splash {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 100;
-      background: radial-gradient(circle at center, rgba(50, 3, 24, 0.95) 0%, rgba(5, 0, 2, 0.98) 100%);
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      z-index: 9999; /* Higher priority overlay */
+      background: #120008; /* Solid background fallback */
+      background: radial-gradient(circle at center, rgba(50, 3, 24, 0.98) 0%, rgba(5, 0, 2, 1) 100%);
       backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
       padding: 2rem;
-      transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: opacity 1s ease, transform 1s ease, visibility 1s;
     }
 
     #splash.hide {
       opacity: 0;
-      transform: scale(1.15);
+      transform: scale(1.1);
+      visibility: hidden;
       pointer-events: none;
     }
 
@@ -110,7 +115,7 @@
       font-family: 'Cinzel', serif;
       font-size: 0.85rem;
       letter-spacing: 4px;
-      color: rgba(255, 215, 0, 0.8);
+      color: rgba(255, 215, 0, 0.85);
       margin-bottom: 2.5rem;
       text-transform: uppercase;
     }
@@ -146,7 +151,7 @@
     .card {
       position: relative;
       z-index: 10;
-      background: rgba(35, 5, 20, 0.55);
+      background: rgba(35, 5, 20, 0.65);
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
       border-radius: 32px;
@@ -159,17 +164,19 @@
         0 30px 60px rgba(0, 0, 0, 0.9),
         inset 0 0 25px rgba(255, 182, 193, 0.1),
         0 0 40px rgba(255, 75, 114, 0.25);
+      display: none; /* Kept completely hidden until splash unlock */
       opacity: 0;
-      transform: translateY(30px) scale(0.95);
-      transition: opacity 1.2s ease 0.4s, transform 1.2s ease 0.4s;
+      transform: translateY(20px);
+      transition: opacity 1s ease, transform 1s ease;
     }
 
     .card.show {
+      display: block;
       opacity: 1;
-      transform: translateY(0) scale(1);
+      transform: translateY(0);
     }
 
-    /* Glowing Profile Halo */
+    /* Avatar Ring */
     .avatar-box {
       position: relative;
       width: 125px;
@@ -224,7 +231,7 @@
 
     /* Reason Box */
     .reason-box {
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.35);
       border: 1px solid rgba(255, 215, 0, 0.2);
       border-radius: 20px;
       padding: 1.2rem;
@@ -272,10 +279,6 @@
         0 0 25px rgba(255, 215, 0, 0.5);
     }
 
-    .btn:active {
-      transform: translateY(1px) scale(0.98);
-    }
-
     .footer {
       position: absolute;
       bottom: 1.2rem;
@@ -311,7 +314,6 @@
   <div class="card" id="mainCard">
     <div class="avatar-box">
       <div class="halo"></div>
-      <!-- Replace image URL with her photo -->
       <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400" alt="Her Photo" class="profile-img">
     </div>
 
@@ -332,7 +334,6 @@
   </div>
 
   <script>
-    // --- REASONS LIST ---
     const reasons = [
       "Your smile single-handedly turns my worst days into pure sunshine.",
       "The adorable, genuine way you laugh at my silly jokes.",
@@ -345,44 +346,59 @@
     ];
 
     let lastIndex = -1;
+    let audioCtx = null;
 
-    // --- SYNTHESIZED ROMANTIC HARP CHIME AUDIO (Zero assets needed) ---
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    
+    // Safe lazy-loaded Audio Context
     function playChimeNote(freq, delay, duration) {
       setTimeout(() => {
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        
-        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
-        
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        
-        osc.start();
-        osc.stop(audioCtx.currentTime + duration);
+        try {
+          if (!audioCtx) {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (AudioContextClass) audioCtx = new AudioContextClass();
+          }
+          if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume();
+          }
+          if (!audioCtx) return;
+
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+          
+          gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+          
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          
+          osc.start();
+          osc.stop(audioCtx.currentTime + duration);
+        } catch (err) {
+          // Fallback gracefully if audio is blocked
+        }
       }, delay);
     }
 
     function playDreamyArpeggio() {
-      const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51]; // C Major Romantic Arpeggio
+      const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
       notes.forEach((freq, i) => playChimeNote(freq, i * 120, 1.8));
     }
 
-    // --- SPLASH UNLOCK ACTION ---
+    // Splash Screen Unlock
     function unlockSite() {
       playDreamyArpeggio();
-      document.getElementById('splash').classList.add('hide');
-      document.getElementById('mainCard').classList.add('show');
+      
+      const splash = document.getElementById('splash');
+      const card = document.getElementById('mainCard');
+      
+      splash.classList.add('hide');
+      card.classList.add('show');
     }
 
-    // --- REASON REVEAL ACTION ---
+    // Reason Transition
     function nextReason(e) {
-      playChimeNote(880, 0, 1.2); // Soft chime on click
+      playChimeNote(880, 0, 1.2);
       if (e) createBurst(e.clientX, e.clientY);
 
       const box = document.getElementById('reasonText');
@@ -400,7 +416,7 @@
       }, 350);
     }
 
-    // --- CANVAS PARTICLES SYSTEM (Rose Petals & Gold Stardust) ---
+    // Canvas Background Animation
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     let width, height, particles = [];
@@ -421,7 +437,7 @@
         this.x = x || Math.random() * width;
         this.y = y || (isBurst ? y : -20);
         this.size = isBurst ? Math.random() * 6 + 3 : Math.random() * 5 + 2;
-        this.speedY = isBurst ? (Math.random() - 0.5) * 7 : Math.random() * 1.2 + 0.5; // Falling downward
+        this.speedY = isBurst ? (Math.random() - 0.5) * 7 : Math.random() * 1.2 + 0.5;
         this.speedX = isBurst ? (Math.random() - 0.5) * 7 : Math.sin(Math.random() * 10) * 0.8;
         this.rotation = Math.random() * 360;
         this.rotSpeed = (Math.random() - 0.5) * 2;
@@ -454,12 +470,10 @@
         ctx.shadowColor = this.color;
 
         if (this.type === 'petal') {
-          // Oval Rose Petal shape
           ctx.beginPath();
           ctx.ellipse(0, 0, this.size, this.size * 1.8, 0, 0, Math.PI * 2);
           ctx.fill();
         } else {
-          // Golden Sparkle
           ctx.beginPath();
           ctx.arc(0, 0, this.size * 0.6, 0, Math.PI * 2);
           ctx.fill();
@@ -468,13 +482,12 @@
       }
     }
 
-    // Populate ambient particles
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 55; i++) {
       particles.push(new Particle(Math.random() * width, Math.random() * height));
     }
 
     function createBurst(x, y) {
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 25; i++) {
         particles.push(new Particle(x, y, true));
       }
     }
