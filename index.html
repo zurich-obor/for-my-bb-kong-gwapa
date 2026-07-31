@@ -2,190 +2,353 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>To My Favorite Person ❤️</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>To My Endless Love ✨</title>
   <style>
-    :root {
-      --bg-color: #fff0f5;
-      --card-bg: rgba(255, 255, 255, 0.85);
-      --primary: #ff4b72;
-      --text: #4a3e43;
-    }
-
-    * {
+    /* 1. AGGRESSIVE SCROLLBAR & OVERFLOW REMOVAL */
+    *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    /* Completely hide scrollbars and prevent layout movement */
     html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden !important;
+      position: fixed; /* Prevents bounce scroll on mobile browsers */
+      top: 0;
+      left: 0;
+      scrollbar-width: none !important; /* Firefox */
+      -ms-overflow-style: none !important; /* IE/Edge */
     }
 
+    html::-webkit-scrollbar, 
+    body::-webkit-scrollbar {
+      display: none !important; /* Chrome, Safari, Opera */
+      width: 0 !important;
+      height: 0 !important;
+    }
+
+    /* 2. EXTRAVAGANT STYLING & LUXURY GRADIENTS */
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #ffd1dc 0%, #fff0f5 100%);
-      color: var(--text);
+      font-family: 'Playfair Display', 'Georgia', 'Segoe UI', serif;
+      background: radial-gradient(circle at center, #2e081d 0%, #12030b 100%);
+      color: #fff;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 1rem;
-      position: relative;
     }
 
-    .card {
-      background: var(--card-bg);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 2.5rem 1.5rem;
-      max-width: 480px;
+    /* Interactive Background Canvas for Particles */
+    #particleCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      text-align: center;
-      box-shadow: 0 10px 30px rgba(255, 105, 180, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.6);
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Glassmorphism Luxury Card */
+    .card {
+      position: relative;
       z-index: 10;
+      background: rgba(45, 15, 30, 0.65);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 28px;
+      padding: 2.5rem 2rem;
+      max-width: 450px;
+      width: 90vw;
+      text-align: center;
+      border: 1px solid rgba(255, 215, 0, 0.3); /* Gold border highlight */
+      box-shadow: 
+        0 20px 50px rgba(0, 0, 0, 0.8),
+        inset 0 0 20px rgba(255, 182, 193, 0.15),
+        0 0 30px rgba(255, 75, 114, 0.2);
+      transform: translateY(0);
+      transition: transform 0.4s ease;
+    }
+
+    /* Glowing Profile Avatar Ring */
+    .avatar-wrapper {
+      position: relative;
+      width: 130px;
+      height: 130px;
+      margin: 0 auto 1.5rem;
     }
 
     .profile-img {
-      width: 130px;
-      height: 130px;
+      width: 100%;
+      height: 100%;
       border-radius: 50%;
       object-fit: cover;
-      border: 4px solid var(--primary);
-      margin-bottom: 1.2rem;
-      box-shadow: 0 4px 15px rgba(255, 75, 114, 0.3);
+      position: relative;
+      z-index: 2;
+      border: 2px solid #ffd700;
     }
 
+    .avatar-ring {
+      position: absolute;
+      top: -6px;
+      left: -6px;
+      right: -6px;
+      bottom: -6px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #ff4b72, #ffd700, #ff8da1, #ffd700);
+      z-index: 1;
+      animation: rotateRing 4s linear infinite;
+      filter: blur(4px);
+    }
+
+    @keyframes rotateRing {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Shimmer Gold/Rose Typography */
     h1 {
-      color: var(--primary);
-      font-size: 1.8rem;
-      margin-bottom: 0.5rem;
+      font-size: 1.9rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff 0%, #ffe3ec 50%, #ffd700 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.5px;
     }
 
-    p.subtitle {
-      font-size: 0.95rem;
-      opacity: 0.85;
+    .subtitle {
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 0.85rem;
+      color: rgba(255, 230, 240, 0.75);
       margin-bottom: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
 
-    /* Fixed height prevents the box from shrinking/expanding when text changes */
+    /* Reason Box with Smooth Fade Transitions */
     .reason-box {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 1rem 1.2rem;
-      height: 90px;
+      font-family: 'Segoe UI', sans-serif;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.15);
+      border-radius: 16px;
+      padding: 1.2rem;
+      height: 100px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04);
       margin-bottom: 1.5rem;
       font-style: italic;
+      font-size: 1.05rem;
+      color: #fff0f5;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+    }
+
+    .reason-box.fade-out {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+
+    /* Extravagant Glowing Button */
+    .btn {
+      position: relative;
+      background: linear-gradient(135deg, #ff4b72 0%, #d62850 50%, #9e1334 100%);
+      color: #fff;
+      border: 1px solid rgba(255, 215, 0, 0.5);
+      padding: 0.9rem 2rem;
       font-size: 1rem;
-      color: #333;
+      font-weight: bold;
+      border-radius: 50px;
+      cursor: pointer;
+      outline: none;
+      box-shadow: 
+        0 8px 25px rgba(255, 75, 114, 0.5),
+        0 0 15px rgba(255, 215, 0, 0.3);
+      transition: all 0.3s ease;
       overflow: hidden;
     }
 
-    button {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 0.8rem 1.6rem;
-      font-size: 1rem;
-      border-radius: 25px;
-      cursor: pointer;
-      font-weight: bold;
-      box-shadow: 0 4px 12px rgba(255, 75, 114, 0.4);
-      transition: transform 0.2s, background 0.2s;
+    .btn:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 
+        0 12px 30px rgba(255, 75, 114, 0.7),
+        0 0 25px rgba(255, 215, 0, 0.6);
     }
 
-    button:hover {
-      transform: scale(1.05);
-      background: #e03a5f;
+    .btn:active {
+      transform: translateY(1px) scale(0.98);
     }
 
     .footer {
-      margin-top: 2rem;
-      font-size: 0.85rem;
-      color: #777;
+      position: absolute;
+      bottom: 1.5rem;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.4);
+      letter-spacing: 1px;
       z-index: 10;
-    }
-
-    /* Fixed positioning stops elements from triggering horizontal scroll overflow */
-    .heart {
-      position: fixed;
-      bottom: -40px;
-      font-size: 1.2rem;
-      animation: float 6s linear infinite;
-      opacity: 0.7;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    @keyframes float {
-      0% {
-        transform: translateY(0) rotate(0deg);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-110vh) rotate(360deg);
-        opacity: 0;
-      }
     }
   </style>
 </head>
 <body>
 
+  <!-- Particle Background Canvas -->
+  <canvas id="particleCanvas"></canvas>
+
   <div class="card">
-    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400" alt="Her Photo" class="profile-img">
-    
-    <h1>Hey [Her Name] 💕</h1>
-    <p class="subtitle">Just a tiny corner of the internet built to remind you how special you are.</p>
-    
-    <div class="reason-box" id="reasonText">
-      Click the button below for a reason why you're amazing! ✨
+    <div class="avatar-wrapper">
+      <div class="avatar-ring"></div>
+      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400" alt="Her Photo" class="profile-img">
     </div>
 
-    <button onclick="nextReason()">Give Me Another Reason ❤️</button>
+    <h1>To My Favorite Person 💕</h1>
+    <p class="subtitle">A Universe of Reasons</p>
+
+    <div class="reason-box" id="reasonText">
+      Click below to discover why you mean everything to me... ✨
+    </div>
+
+    <button class="btn" id="reasonBtn" onclick="nextReason(event)">
+      Reveal Another Reason ❤️
+    </button>
   </div>
 
   <div class="footer">
-    Made with ❤️ just for you
+    CRAFTED WITH ENDLESS LOVE
   </div>
 
   <script>
+    // --- REASONS DATABASE ---
     const reasons = [
-      "Your smile can make even my worst day instantly better.",
-      "The way you laugh at my silly jokes.",
-      "How thoughtful and caring you are with everyone around you.",
-      "You always know how to comfort me when I'm stressed.",
-      "You're not just my girlfriend, you're my absolute best friend.",
-      "Your passion and drive inspire me every single day.",
-      "The way your eyes light up when you talk about things you love."
+      "Your smile instantly brightens up even my darkest days.",
+      "The genuine way you laugh at my silliness makes my heart melt.",
+      "You inspire me every day to be a better person.",
+      "How incredibly thoughtful and compassionate you are to everyone.",
+      "The magical way your eyes light up when you're excited.",
+      "You aren't just my love; you are my best friend and safe haven.",
+      "Your comforting hug feels like home no matter where we are.",
+      "Your kindness, elegance, and beauty leave me speechless."
     ];
 
-    function nextReason() {
+    let lastIndex = -1;
+
+    function nextReason(event) {
       const box = document.getElementById('reasonText');
-      const randomReason = reasons[Math.floor(Math.random() * reasons.length)];
-      box.innerText = randomReason;
-    }
-
-    function createHeart() {
-      const heart = document.createElement('div');
-      heart.classList.add('heart');
-      heart.innerText = ['💖', '💕', '✨', '🌸', '❤️'][Math.floor(Math.random() * 5)];
       
-      // Restrict horizontal placement to inside viewport boundaries
-      heart.style.left = (Math.random() * 92 + 4) + '%';
-      heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
-      document.body.appendChild(heart);
+      // Trigger burst particles at button location
+      if (event) createBurst(event.clientX, event.clientY);
 
-      setTimeout(() => { heart.remove(); }, 6000);
+      // Smooth Fade Out / In transition
+      box.classList.add('fade-out');
+
+      setTimeout(() => {
+        let randomIndex;
+        do {
+          randomIndex = Math.floor(Math.random() * reasons.length);
+        } while (randomIndex === lastIndex && reasons.length > 1);
+        
+        lastIndex = randomIndex;
+        box.innerText = reasons[randomIndex];
+        box.classList.remove('fade-out');
+      }, 300);
     }
-    setInterval(createHeart, 500);
+
+    // --- CANVAS ANIMATION SYSTEM (Bokeh, Hearts & Sparkles) ---
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let width, height;
+    let particles = [];
+
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    class Particle {
+      constructor(x, y, isBurst = false) {
+        this.reset(x, y, isBurst);
+      }
+
+      reset(x, y, isBurst = false) {
+        this.x = x || Math.random() * width;
+        this.y = y || (isBurst ? y : height + 20);
+        this.size = isBurst ? Math.random() * 8 + 4 : Math.random() * 4 + 1;
+        this.speedY = isBurst ? (Math.random() - 0.5) * 8 : -Math.random() * 1.5 - 0.5;
+        this.speedX = isBurst ? (Math.random() - 0.5) * 8 : (Math.random() - 0.5) * 0.8;
+        this.opacity = isBurst ? 1 : Math.random() * 0.6 + 0.2;
+        this.fade = isBurst ? Math.random() * 0.03 + 0.015 : 0;
+        this.color = ['#ff4b72', '#ffd700', '#ff8da1', '#ffffff'][Math.floor(Math.random() * 4)];
+        this.isHeart = Math.random() > 0.6;
+      }
+
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+
+        if (this.fade > 0) {
+          this.opacity -= this.fade;
+        } else if (this.y < -20) {
+          this.reset();
+        }
+      }
+
+      draw() {
+        if (this.opacity <= 0) return;
+        ctx.save();
+        ctx.globalAlpha = this.opacity;
+        ctx.fillStyle = this.color;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = this.color;
+
+        if (this.isHeart) {
+          ctx.font = `${this.size * 2.5}px serif`;
+          ctx.fillText('♥', this.x, this.y);
+        } else {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+    }
+
+    // Initialize floating background particles
+    for (let i = 0; i < 50; i++) {
+      particles.push(new Particle(Math.random() * width, Math.random() * height));
+    }
+
+    // Interactive sparkle burst on click
+    function createBurst(x, y) {
+      for (let i = 0; i < 25; i++) {
+        particles.push(new Particle(x, y, true));
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        particles[i].update();
+        particles[i].draw();
+
+        // Remove dead burst particles
+        if (particles[i].fade > 0 && particles[i].opacity <= 0) {
+          particles.splice(i, 1);
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
   </script>
 </body>
 </html>
