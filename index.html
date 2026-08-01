@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>For My Endless Love ✨</title>
   
   <!-- Google Fonts -->
@@ -12,7 +12,7 @@
 
   <style>
     /* ==========================================
-       1. OVERFLOW & SCROLLBAR CONTROL
+       1. OVERFLOW & MOBILE BASE CONTROLS
        ========================================== */
     *, *::before, *::after {
       box-sizing: border-box;
@@ -20,6 +20,7 @@
       padding: 0;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
+      touch-action: manipulation;
     }
 
     html, body {
@@ -51,7 +52,7 @@
     }
 
     /* ==========================================
-       2. FULL-SCREEN FILMSTRIP SLIDESHOW
+       2. FILMSTRIP SLIDESHOW (SLOWER SPEED)
        ========================================== */
     .filmstrip-container {
       position: absolute;
@@ -59,13 +60,13 @@
       right: 0;
       width: 100vw;
       overflow: hidden;
-      z-index: 0; /* Behind canvas petals */
+      z-index: 0;
       opacity: 0.5;
       pointer-events: none;
     }
 
     .filmstrip-container.top {
-      top: 12px;
+      top: 15px;
     }
 
     .filmstrip-container.bottom {
@@ -77,19 +78,20 @@
       gap: 12px;
       width: max-content;
       will-change: transform;
-      animation: filmScroll 35s linear infinite;
+      /* Extended duration to 95s for a smooth, slow drift */
+      animation: filmScroll 95s linear infinite; 
     }
 
     .filmstrip-container.bottom .filmstrip-track {
-      animation-direction: reverse; /* Scrolls in opposite direction */
+      animation-direction: reverse;
     }
 
     @keyframes filmScroll {
       0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); } /* Perfect infinite loop */
+      100% { transform: translateX(-50%); }
     }
 
-    /* Film Frame */
+    /* Film Frame (Desktop Default) */
     .film-frame {
       position: relative;
       width: 120px;
@@ -153,7 +155,7 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 2rem;
+      padding: 1.5rem;
       transition: opacity 1s ease, transform 1s ease, visibility 1s;
     }
 
@@ -165,15 +167,15 @@
     }
 
     .splash-seal {
-      font-size: 4rem;
-      margin-bottom: 1rem;
+      font-size: 3.8rem;
+      margin-bottom: 0.8rem;
       animation: pulseHeart 2s infinite ease-in-out;
       filter: drop-shadow(0 0 20px rgba(255, 75, 114, 0.8));
     }
 
     .splash-title {
       font-family: 'Great Vibes', cursive;
-      font-size: 3.5rem;
+      font-size: 3.2rem;
       background: linear-gradient(135deg, #fff 0%, #ffe3ec 40%, #ffd700 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -183,10 +185,10 @@
 
     .splash-sub {
       font-family: 'Cinzel', serif;
-      font-size: 0.85rem;
-      letter-spacing: 4px;
+      font-size: 0.8rem;
+      letter-spacing: 3px;
       color: rgba(255, 215, 0, 0.85);
-      margin-bottom: 2.5rem;
+      margin-bottom: 2rem;
       text-transform: uppercase;
     }
 
@@ -196,9 +198,9 @@
       color: #1a000c;
       font-family: 'Cinzel', serif;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       letter-spacing: 2px;
-      padding: 1.1rem 2.8rem;
+      padding: 1rem 2.4rem;
       border-radius: 50px;
       border: 1px solid rgba(255, 255, 255, 0.6);
       cursor: pointer;
@@ -208,11 +210,8 @@
       transition: all 0.4s ease;
     }
 
-    .splash-btn:hover {
-      transform: scale(1.06);
-      box-shadow: 
-        0 0 40px rgba(255, 215, 0, 0.8),
-        0 12px 35px rgba(0, 0, 0, 0.6);
+    .splash-btn:active {
+      transform: scale(0.96);
     }
 
     /* ==========================================
@@ -221,12 +220,12 @@
     .card {
       position: relative;
       z-index: 10;
-      background: rgba(35, 5, 20, 0.75);
+      background: rgba(35, 5, 20, 0.78);
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
       border-radius: 32px;
-      padding: 2.5rem 2rem;
-      max-width: 440px;
+      padding: 2.2rem 1.8rem;
+      max-width: 420px;
       width: 88vw;
       text-align: center;
       border: 1px solid rgba(255, 215, 0, 0.35);
@@ -248,9 +247,9 @@
 
     .avatar-box {
       position: relative;
-      width: 140px;
-      height: 140px;
-      margin: 0 auto 1.5rem;
+      width: 130px;
+      height: 130px;
+      margin: 0 auto 1.2rem;
     }
 
     .profile-img {
@@ -281,7 +280,7 @@
 
     h1 {
       font-family: 'Great Vibes', cursive;
-      font-size: 2.8rem;
+      font-size: 2.6rem;
       font-weight: 400;
       background: linear-gradient(135deg, #ffffff 0%, #ffe3ec 50%, #ffd700 100%);
       -webkit-background-clip: text;
@@ -291,24 +290,24 @@
 
     .subtitle {
       font-family: 'Cinzel', serif;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       letter-spacing: 3px;
       color: rgba(255, 215, 0, 0.75);
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.2rem;
       text-transform: uppercase;
     }
 
     .reason-box {
       background: rgba(0, 0, 0, 0.35);
       border: 1px solid rgba(255, 215, 0, 0.2);
-      border-radius: 20px;
-      padding: 1.2rem;
-      height: 105px;
+      border-radius: 18px;
+      padding: 1.1rem;
+      min-height: 95px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 1.5rem;
-      font-size: 1rem;
+      margin-bottom: 1.2rem;
+      font-size: 0.95rem;
       font-weight: 300;
       line-height: 1.5;
       color: #fff0f5;
@@ -326,11 +325,11 @@
       background: linear-gradient(135deg, #ff2a5f 0%, #b80e38 50%, #7a001e 100%);
       color: #fff;
       font-family: 'Cinzel', serif;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       letter-spacing: 1px;
       font-weight: 700;
       border: 1px solid rgba(255, 215, 0, 0.4);
-      padding: 1rem 2.2rem;
+      padding: 0.95rem 2rem;
       border-radius: 50px;
       cursor: pointer;
       box-shadow: 
@@ -339,18 +338,15 @@
       transition: all 0.3s ease;
     }
 
-    .btn:hover {
-      transform: translateY(-2px) scale(1.03);
-      box-shadow: 
-        0 12px 30px rgba(255, 42, 95, 0.7),
-        0 0 25px rgba(255, 215, 0, 0.5);
+    .btn:active {
+      transform: scale(0.96);
     }
 
     .footer {
       position: absolute;
-      bottom: 1rem;
+      bottom: 0.8rem;
       font-family: 'Cinzel', serif;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       letter-spacing: 2px;
       color: rgba(255, 215, 0, 0.4);
       z-index: 10;
@@ -359,6 +355,58 @@
     @keyframes pulseHeart {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.12); }
+    }
+
+    /* ==========================================
+       5. MOBILE DEVICE RESPONSIVE STYLES
+       ========================================== */
+    @media (max-width: 600px), (max-height: 680px) {
+      /* Scaled down filmstrip frames for mobile */
+      .film-frame {
+        width: 95px;
+        height: 65px;
+        border-top: 7px solid #1a1a1a;
+        border-bottom: 7px solid #1a1a1a;
+      }
+      .film-frame::before { top: -5px; }
+      .film-frame::after { bottom: -5px; }
+
+      .filmstrip-container.top { top: 8px; }
+      .filmstrip-container.bottom { bottom: 25px; }
+
+      /* Compact card for small screens */
+      .card {
+        padding: 1.5rem 1.2rem;
+        width: 90vw;
+        border-radius: 24px;
+      }
+
+      .avatar-box {
+        width: 105px;
+        height: 105px;
+        margin-bottom: 0.8rem;
+      }
+
+      h1 { font-size: 2.2rem; }
+      .subtitle { font-size: 0.62rem; margin-bottom: 0.9rem; }
+
+      .reason-box {
+        font-size: 0.88rem;
+        min-height: 80px;
+        padding: 0.85rem;
+        margin-bottom: 1rem;
+      }
+
+      .btn {
+        padding: 0.8rem 1.6rem;
+        font-size: 0.75rem;
+      }
+
+      .splash-title { font-size: 2.6rem; }
+      .splash-sub { font-size: 0.7rem; margin-bottom: 1.5rem; }
+      .splash-btn { padding: 0.85rem 2rem; font-size: 0.82rem; }
+      
+      .footer { font-size: 0.58rem; bottom: 0.5rem; }
     }
   </style>
 </head>
@@ -410,7 +458,7 @@
   </div>
 
   <script>
-    // --- FILMSTRIP IMAGES LIST (Add your image links here) ---
+    // --- FILMSTRIP IMAGES LIST ---
     const filmPhotos = [
       "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=300",
       "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=300",
@@ -419,16 +467,18 @@
       "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=300"
     ];
 
-    // DYNAMIC FILMSTRIP GENERATOR (Fills any screen size edge-to-edge)
+    // DYNAMIC FILMSTRIP GENERATOR (Mobile + Desktop aware)
     function buildFilmstrips() {
       const topTrack = document.getElementById('topTrack');
       const bottomTrack = document.getElementById('bottomTrack');
+      if (!topTrack || !bottomTrack) return;
       
-      const frameWidth = 132; // 120px width + 12px gap
+      const isMobile = window.innerWidth <= 600;
+      const frameWidth = isMobile ? 107 : 132; // Calculated width + gap
       const screenWidth = window.innerWidth;
       
-      // Calculate how many photo repeats are needed to comfortably span twice the screen width
-      const repeatCount = Math.ceil((screenWidth * 2.5) / (filmPhotos.length * frameWidth)) + 1;
+      // Calculate needed frames so it covers any phone or ultra-wide screen seamlessly
+      const repeatCount = Math.ceil((screenWidth * 3) / (filmPhotos.length * frameWidth)) + 2;
       
       let htmlContent = '';
       for (let r = 0; r < repeatCount; r++) {
@@ -437,7 +487,6 @@
         });
       }
 
-      // Duplicate the whole batch so the -50% CSS infinite loop is seamlessly smooth
       topTrack.innerHTML = htmlContent + htmlContent;
       bottomTrack.innerHTML = htmlContent + htmlContent;
     }
@@ -585,12 +634,12 @@
       }
     }
 
-    for (let i = 0; i < 55; i++) {
+    for (let i = 0; i < 45; i++) {
       particles.push(new Particle(Math.random() * width, Math.random() * height));
     }
 
     function createBurst(x, y) {
-      for (let i = 0; i < 25; i++) {
+      for (let i = 0; i < 20; i++) {
         particles.push(new Particle(x, y, true));
       }
     }
