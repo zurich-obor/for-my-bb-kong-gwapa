@@ -52,7 +52,7 @@
     }
 
     /* ==========================================
-       2. FILMSTRIP SLIDESHOW (SLOWER SPEED)
+       2. FILMSTRIP SLIDESHOW
        ========================================== */
     .filmstrip-container {
       position: absolute;
@@ -78,7 +78,6 @@
       gap: 12px;
       width: max-content;
       will-change: transform;
-      /* Extended duration to 95s for a smooth, slow drift */
       animation: filmScroll 200s linear infinite; 
     }
 
@@ -215,7 +214,7 @@
     }
 
     /* ==========================================
-       4. MAIN CARD
+       4. MAIN CARD & AVATAR
        ========================================== */
     .card {
       position: relative;
@@ -245,37 +244,81 @@
       transform: translateY(0);
     }
 
+    /* AVATAR & ROMANTIC GLOW EFFECTS */
     .avatar-box {
       position: relative;
       width: 200px;
       height: 200px;
       margin: 0 auto 1.2rem;
+      border-radius: 50%;
     }
 
     .profile-img {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       border-radius: 50%;
       object-fit: cover;
-      position: relative;
-      z-index: 2;
-      border: 2px solid #ffd700;
+      z-index: 3;
+      border: 2px solid rgba(255, 215, 0, 0.85);
+      opacity: 0;
+      transition: opacity 2s ease-in-out;
+      box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3);
     }
 
+    .profile-img.active {
+      opacity: 1;
+    }
+
+    /* Outer Mesmerizing Halo */
     .halo {
       position: absolute;
-      top: -8px; left: -8px; right: -8px; bottom: -8px;
+      top: -12px; left: -12px; right: -12px; bottom: -12px;
       border-radius: 50%;
-      background: linear-gradient(45deg, #ff3366, #ffd700, #ff8da1, #ffd700);
+      background: conic-gradient(
+        from 0deg,
+        #ff2a5f,
+        #ffd700,
+        #ff8da1,
+        #b82e8a,
+        #ff2a5f
+      );
       z-index: 1;
-      animation: spinHalo 6s linear infinite;
-      filter: blur(6px);
+      animation: 
+        spinHalo 7s linear infinite,
+        romanticPulse 3.5s ease-in-out infinite alternate,
+        hueShift 12s ease-in-out infinite;
+      filter: blur(10px);
       opacity: 0.85;
+    }
+
+    /* Inner Shimmer Halo for depth */
+    .halo-inner {
+      position: absolute;
+      top: -5px; left: -5px; right: -5px; bottom: -5px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 215, 0, 0.8) 0%, rgba(255, 42, 95, 0.5) 70%, transparent 100%);
+      z-index: 2;
+      animation: romanticPulse 2.5s ease-in-out infinite alternate;
+      filter: blur(4px);
     }
 
     @keyframes spinHalo {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
+    }
+
+    @keyframes romanticPulse {
+      0% { transform: scale(0.96); opacity: 0.7; }
+      100% { transform: scale(1.06); opacity: 1; }
+    }
+
+    @keyframes hueShift {
+      0% { filter: blur(10px) hue-rotate(0deg); }
+      50% { filter: blur(14px) hue-rotate(60deg); }
+      100% { filter: blur(10px) hue-rotate(0deg); }
     }
 
     h1 {
@@ -361,7 +404,6 @@
        5. MOBILE DEVICE RESPONSIVE STYLES
        ========================================== */
     @media (max-width: 600px), (max-height: 680px) {
-      /* Scaled down filmstrip frames for mobile */
       .film-frame {
         width: 95px;
         height: 65px;
@@ -374,7 +416,6 @@
       .filmstrip-container.top { top: 8px; }
       .filmstrip-container.bottom { bottom: 25px; }
 
-      /* Compact card for small screens */
       .card {
         padding: 1.5rem 1.2rem;
         width: 90vw;
@@ -438,7 +479,9 @@
   <div class="card" id="mainCard">
     <div class="avatar-box">
       <div class="halo"></div>
-      <img src="dp/dp.jpg" alt="Her Photo" class="profile-img">
+      <div class="halo-inner"></div>
+      <img src="dp/dp.jpg" id="avatarCurrent" class="profile-img active" alt="Her Photo">
+      <img src="dp/dp.jpg" id="avatarNext" class="profile-img" alt="Her Photo">
     </div>
 
     <h1>Happy Girlfriend's day and Monthsary babyy ko 💕</h1>
@@ -453,32 +496,58 @@
   </div>
 
   <div class="footer">
-    FOREVER & ALWAYS YOURS
+    FOREVER & ALWAYS YOUR DOGGY
   </div>
 
   <script>
-    // --- FILMSTRIP IMAGES LIST ---
-    const filmPhotos = [
-        "pictures/1.jpg",
-        "pictures/2.jpg",
-        "pictures/3.jpg",
-        "pictures/4.jpg",
-        "pictures/5.jpg",
-        "pictures/6.jpg",
-        "pictures/7.jpg",
+    // --- AVATAR SLIDESHOW (Rotates smoothly every 20 seconds) ---
+    const avatarPhotos = [
+      "dp/dp.jpg",
+      "pictures/dp2.jpg",
+      "pictures/dp3.jpg",
+      "pictures/dp4.jpg",
+      "pictures/dp5.jpg",
+      "pictures/dp6.jpg"
     ];
 
-    // DYNAMIC FILMSTRIP GENERATOR (Mobile + Desktop aware)
+    let currentAvatarIdx = 0;
+    let isCurrentActive = true;
+
+    setInterval(() => {
+      if (avatarPhotos.length <= 1) return;
+
+      currentAvatarIdx = (currentAvatarIdx + 1) % avatarPhotos.length;
+      const currentImg = isCurrentActive ? document.getElementById('avatarCurrent') : document.getElementById('avatarNext');
+      const nextImg = isCurrentActive ? document.getElementById('avatarNext') : document.getElementById('avatarCurrent');
+
+      nextImg.src = avatarPhotos[currentAvatarIdx];
+      nextImg.classList.add('active');
+      currentImg.classList.remove('active');
+
+      isCurrentActive = !isCurrentActive;
+    }, 20000); // 20,000 milliseconds = 20 seconds
+
+    // --- FILMSTRIP IMAGES LIST ---
+    const filmPhotos = [
+      "pictures/1.jpg",
+      "pictures/2.jpg",
+      "pictures/3.jpg",
+      "pictures/4.jpg",
+      "pictures/5.jpg",
+      "pictures/6.jpg",
+      "pictures/7.jpg"
+    ];
+
+    // DYNAMIC FILMSTRIP GENERATOR
     function buildFilmstrips() {
       const topTrack = document.getElementById('topTrack');
       const bottomTrack = document.getElementById('bottomTrack');
       if (!topTrack || !bottomTrack) return;
       
       const isMobile = window.innerWidth <= 600;
-      const frameWidth = isMobile ? 107 : 132; // Calculated width + gap
+      const frameWidth = isMobile ? 107 : 132;
       const screenWidth = window.innerWidth;
       
-      // Calculate needed frames so it covers any phone or ultra-wide screen seamlessly
       const repeatCount = Math.ceil((screenWidth * 3) / (filmPhotos.length * frameWidth)) + 2;
       
       let htmlContent = '';
