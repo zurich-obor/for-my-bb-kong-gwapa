@@ -251,7 +251,7 @@
       height: 200px;
       margin: 0 auto 1.2rem;
       border-radius: 50%;
-      background: #120008; /* Fallback background */
+      background: #120008;
     }
 
     .profile-img {
@@ -266,8 +266,11 @@
       border: 2px solid rgba(255, 215, 0, 0.85);
       opacity: 0;
       transition: opacity 1.5s ease-in-out;
+      will-change: opacity;
+      transform: translateZ(0);
+      backface-visibility: hidden;
       box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3);
-      color: transparent; /* Prevents alt text from showing awkwardly */
+      color: transparent;
       font-size: 0;
     }
 
@@ -503,7 +506,7 @@
   </div>
 
   <script>
-    // --- AVATAR SLIDESHOW WITH PRELOADING & ERROR HANDLING ---
+    // --- AVATAR SLIDESHOW WITH PRELOADING & SMOOTH LOCKING ---
     const avatarPhotos = [
       "dp/dp.jpg",
       "dp/dp2.jpg",
@@ -513,40 +516,55 @@
       "dp/dp6.jpg"
     ];
 
-    // Preload images into memory immediately
+    // Preload images immediately
     avatarPhotos.forEach(src => {
       const img = new Image();
       img.src = src;
     });
 
     let currentAvatarIdx = 0;
-    let isCurrentActive = true;
+    let activeSlot = 0; // 0 = avatarCurrent, 1 = avatarNext
+    let isTransitioning = false;
 
-    setInterval(() => {
-      if (avatarPhotos.length <= 1) return;
+    function changeAvatar() {
+      if (avatarPhotos.length <= 1 || isTransitioning) return;
+      isTransitioning = true;
 
       const nextIdx = (currentAvatarIdx + 1) % avatarPhotos.length;
       const newSrc = avatarPhotos[nextIdx];
 
-      const currentImg = isCurrentActive ? document.getElementById('avatarCurrent') : document.getElementById('avatarNext');
-      const nextImg = isCurrentActive ? document.getElementById('avatarNext') : document.getElementById('avatarCurrent');
+      const currentImg = document.getElementById(activeSlot === 0 ? 'avatarCurrent' : 'avatarNext');
+      const nextImg = document.getElementById(activeSlot === 0 ? 'avatarNext' : 'avatarCurrent');
 
-      // Create a temporary image loader to ensure it ONLY fades when loaded
       const tempImg = new Image();
       tempImg.onload = () => {
-        currentAvatarIdx = nextIdx;
         nextImg.src = newSrc;
-        nextImg.classList.add('active');
-        currentImg.classList.remove('active');
-        isCurrentActive = !isCurrentActive;
-      };
-      tempImg.onerror = () => {
-        console.warn(`Could not load image: ${newSrc}. Skipping...`);
-        currentAvatarIdx = nextIdx; // Skip missing file silently
-      };
-      tempImg.src = newSrc;
+        
+        requestAnimationFrame(() => {
+          nextImg.classList.add('active');
+          currentImg.classList.remove('active');
+          
+          activeSlot = activeSlot === 0 ? 1 : 0;
+          currentAvatarIdx = nextIdx;
 
-    }, 5000); // Transitions every 5 seconds
+          // Unlock transition only after CSS crossfade animation finishes (1.5s)
+          setTimeout(() => {
+            isTransitioning = false;
+          }, 1500);
+        });
+      };
+
+      tempImg.onerror = () => {
+        // Skip broken images cleanly without breaking the cycle
+        currentAvatarIdx = nextIdx;
+        isTransitioning = false;
+      };
+
+      tempImg.src = newSrc;
+    }
+
+    // Runs smooth rotation every 10 seconds
+    setInterval(changeAvatar, 10000);
 
     // --- FILMSTRIP IMAGES LIST ---
     const filmPhotos = [
@@ -583,7 +601,15 @@
     }
 
     buildFilmstrips();
-    window.addEventListener('resize', buildFilmstrips);
+
+    // Rebuild only on actual width change (avoids mobile viewport height glitches)
+    let lastWidth = window.innerWidth;
+    window.addEventListener('resize', () => {
+      if (Math.abs(window.innerWidth - lastWidth) > 30) {
+        lastWidth = window.innerWidth;
+        buildFilmstrips();
+      }
+    });
 
     // --- REASONS DATABASE ---
     const reasons = [
