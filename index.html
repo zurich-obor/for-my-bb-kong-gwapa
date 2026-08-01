@@ -251,6 +251,7 @@
       height: 200px;
       margin: 0 auto 1.2rem;
       border-radius: 50%;
+      background: #120008; /* Fallback background */
     }
 
     .profile-img {
@@ -264,8 +265,10 @@
       z-index: 3;
       border: 2px solid rgba(255, 215, 0, 0.85);
       opacity: 0;
-      transition: opacity 2s ease-in-out;
+      transition: opacity 1.5s ease-in-out;
       box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3);
+      color: transparent; /* Prevents alt text from showing awkwardly */
+      font-size: 0;
     }
 
     .profile-img.active {
@@ -480,8 +483,8 @@
     <div class="avatar-box">
       <div class="halo"></div>
       <div class="halo-inner"></div>
-      <img src="dp/dp.jpg" id="avatarCurrent" class="profile-img active" alt="Her Photo">
-      <img src="dp/dp.jpg" id="avatarNext" class="profile-img" alt="Her Photo">
+      <img src="dp/dp.jpg" id="avatarCurrent" class="profile-img active" alt="">
+      <img src="dp/dp.jpg" id="avatarNext" class="profile-img" alt="">
     </div>
 
     <h1>Happy Girlfriend's day and Monthsary babyy ko 💕</h1>
@@ -500,7 +503,7 @@
   </div>
 
   <script>
-    // --- AVATAR SLIDESHOW (Rotates smoothly every 20 seconds) ---
+    // --- AVATAR SLIDESHOW WITH PRELOADING & ERROR HANDLING ---
     const avatarPhotos = [
       "dp/dp.jpg",
       "dp/dp2.jpg",
@@ -510,22 +513,40 @@
       "dp/dp6.jpg"
     ];
 
+    // Preload images into memory immediately
+    avatarPhotos.forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+
     let currentAvatarIdx = 0;
     let isCurrentActive = true;
 
     setInterval(() => {
       if (avatarPhotos.length <= 1) return;
 
-      currentAvatarIdx = (currentAvatarIdx + 1) % avatarPhotos.length;
+      const nextIdx = (currentAvatarIdx + 1) % avatarPhotos.length;
+      const newSrc = avatarPhotos[nextIdx];
+
       const currentImg = isCurrentActive ? document.getElementById('avatarCurrent') : document.getElementById('avatarNext');
       const nextImg = isCurrentActive ? document.getElementById('avatarNext') : document.getElementById('avatarCurrent');
 
-      nextImg.src = avatarPhotos[currentAvatarIdx];
-      nextImg.classList.add('active');
-      currentImg.classList.remove('active');
+      // Create a temporary image loader to ensure it ONLY fades when loaded
+      const tempImg = new Image();
+      tempImg.onload = () => {
+        currentAvatarIdx = nextIdx;
+        nextImg.src = newSrc;
+        nextImg.classList.add('active');
+        currentImg.classList.remove('active');
+        isCurrentActive = !isCurrentActive;
+      };
+      tempImg.onerror = () => {
+        console.warn(`Could not load image: ${newSrc}. Skipping...`);
+        currentAvatarIdx = nextIdx; // Skip missing file silently
+      };
+      tempImg.src = newSrc;
 
-      isCurrentActive = !isCurrentActive;
-    }, 5000); // 20,000 milliseconds = 20 seconds
+    }, 5000); // Transitions every 5 seconds
 
     // --- FILMSTRIP IMAGES LIST ---
     const filmPhotos = [
@@ -570,6 +591,7 @@
       "The adorable, genuine way you chika about your day makes me feel I am fully part of your world.",
       "You inspire me every single day to dream bigger and love you deeper, charizz.",
       "How gentle, caring, hardworking and unbelievably thoughtful you are.",
+      "You are the cutest, most gorgeous, and beautiful nurse I have ever seen. Kiss ko behhh",
       "The magical spark in your hazel eyes when you look at me mesmerizes me.",
       "You are not just my girlfriend; you are my best friend and soulmate talaga.",
       "Your warm hugs feel like home, mingawon ko permi nimoo.",
